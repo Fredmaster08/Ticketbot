@@ -13,26 +13,22 @@
 #define SCREEN_HEIGHT 1440
 
 
-void MouseSetup(INPUT *buffer)
-{
+void MouseMoveRelative(INPUT *buffer, int x, int y) {
     buffer->type = INPUT_MOUSE;
-    buffer->mi.dx = (0 * (0xFFFF / SCREEN_WIDTH));
-    buffer->mi.dy = (0 * (0xFFFF / SCREEN_HEIGHT));
     buffer->mi.mouseData = 0;
-    buffer->mi.dwFlags = MOUSEEVENTF_ABSOLUTE;
     buffer->mi.time = 0;
     buffer->mi.dwExtraInfo = 0;
-}
-
-void MouseMoveRelative(INPUT *buffer, int x, int y) {
     buffer->mi.dx = x;
     buffer->mi.dy = y;
     buffer->mi.dwFlags = MOUSEEVENTF_MOVE;
     SendInput(1, buffer, sizeof(INPUT));
 }
 
-void MouseMoveAbsolute(INPUT *buffer, int x, int y)
-{
+void MouseMoveAbsolute(INPUT *buffer, int x, int y) {
+    buffer->type = INPUT_MOUSE;
+    buffer->mi.mouseData = 0;
+    buffer->mi.time = 0;
+    buffer->mi.dwExtraInfo = 0;
     buffer->mi.dx = (x * (0xFFFF / SCREEN_WIDTH));
     buffer->mi.dy = (y * (0xFFFF / SCREEN_HEIGHT));
     buffer->mi.dwFlags = (MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE);
@@ -40,9 +36,11 @@ void MouseMoveAbsolute(INPUT *buffer, int x, int y)
     SendInput(1, buffer, sizeof(INPUT));
 }
 
-
-void MouseClick(INPUT *buffer)
-{
+void MouseClick(INPUT *buffer) {
+    buffer->type = INPUT_MOUSE;
+    buffer->mi.mouseData = 0;
+    buffer->mi.time = 0;
+    buffer->mi.dwExtraInfo = 0;
     buffer->mi.dwFlags = (MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN);
     SendInput(1, buffer, sizeof(INPUT));
 
@@ -52,15 +50,72 @@ void MouseClick(INPUT *buffer)
     SendInput(1, buffer, sizeof(INPUT));
 }
 
+void KeyDown(INPUT *buffer, WORD key) {
+    buffer->type = INPUT_KEYBOARD;
+    buffer->ki.wVk = key;
+    buffer->ki.dwFlags = 0;
+    SendInput(1, buffer, sizeof(INPUT));
+}
 
-int main(int argc, char *argv[])
-{
-    INPUT buffer;
+void KeyUp(INPUT *buffer, WORD key) {
+    buffer->type = INPUT_KEYBOARD;
+    buffer->ki.wVk = key;
+    buffer->ki.dwFlags = KEYEVENTF_KEYUP;
+    SendInput(1, buffer, sizeof(INPUT));
+}
 
-    MouseSetup(&buffer);
+void KeyPress(INPUT *buffer, WORD key) {
+    KeyDown(buffer, key);
+    KeyUp(buffer, key);
+}
 
-    MouseMoveRelative(&buffer, -2000, 0);
-    MouseClick(&buffer);
+
+int main(int argc, char *argv[]) {
+
+    INPUT buffer;           //x: 1386 y: 582 Guide, x: 1172 y: 553 chicken wheeel
+
+    Sleep(1000);
+    SetCursorPos(500, 500); // bewegt Maus zum rechten Monitor (Minecraft)
+    Sleep(1000);
+    MouseClick(&buffer); // ist in Minecraft offiziell drin
+    Sleep(1000);
+    KeyPress(&buffer, VK_ESCAPE); // geht aus dem Chat
+    Sleep(1000);
+    KeyPress(&buffer, '9'); // wählt 9. Slot aus (nether star)
+    Sleep(1000);
+    MouseClick(&buffer);    // geht zu den Lobbys im star
+    Sleep(1000);
+    SetCursorPos(1495, 610); // bewegt Maus zu Lobby 18
+    Sleep(1000);
+    MouseClick(&buffer); // ist in Lobby 18
+    Sleep(1000);
+    KeyDown(&buffer, VK_SHIFT); // fliegt nicht mehr
+    Sleep(3000);
+    KeyUp(&buffer, VK_SHIFT);
+    Sleep(100);
+    KeyDown(&buffer, 'W');
+    Sleep(500);
+    KeyUp(&buffer, 'W');
+    Sleep(500);
+    MouseMoveRelative(&buffer, -1394, 0);
+    Sleep(100);
+    KeyDown(&buffer, 'W');
+    Sleep(2000);
+    KeyUp(&buffer, 'W');
+    Sleep(100);
+    MouseMoveRelative(&buffer, 1394, 0);
+    Sleep(100);
+    KeyDown(&buffer, 'W');
+    Sleep(1430);
+    KeyUp(&buffer, 'W');
+
+
+    while(1) {
+
+
+    }
+
+
 
     return 0;
 }
