@@ -74,6 +74,26 @@ int main(int argc, char *argv[]) {
 
     INPUT buffer;           //x: 1386 y: 582 Guide, x: 1172 y: 553 chicken wheeel
 
+
+
+
+    /*
+    while(1) {
+        POINT position;
+        GetCursorPos(&position);
+        printf("x: %d y: %d\n", position.x, position.y);
+        Sleep(2000);
+    }    */
+    
+   
+    
+
+     
+   
+   
+   
+
+
     Sleep(1000);
     SetCursorPos(500, 500); // bewegt Maus zum rechten Monitor (Minecraft)
     Sleep(1000);
@@ -83,7 +103,7 @@ int main(int argc, char *argv[]) {
     Sleep(1000);
     KeyPress(&buffer, '9'); // wählt 9. Slot aus (nether star)
     Sleep(1000);
-    MouseClick(&buffer);    // geht zu den Lobbys im star
+    MouseClick(&buffer);    // geht zu den Lobbys mit dem star
     Sleep(1000);
     SetCursorPos(1495, 610); // bewegt Maus zu Lobby 18
     Sleep(1000);
@@ -92,28 +112,30 @@ int main(int argc, char *argv[]) {
     KeyDown(&buffer, VK_SHIFT); // fliegt nicht mehr
     Sleep(3000);
     KeyUp(&buffer, VK_SHIFT);
+    Sleep(500);
+    MouseMoveRelative(&buffer, -815, 0);
     Sleep(100);
     KeyDown(&buffer, 'W');
-    Sleep(500);
+    Sleep(3000);
     KeyUp(&buffer, 'W');
-    Sleep(500);
-    MouseMoveRelative(&buffer, -1394, 0);
-    Sleep(100);
-    KeyDown(&buffer, 'W');
     Sleep(2000);
-    KeyUp(&buffer, 'W');
-    Sleep(100);
-    MouseMoveRelative(&buffer, 1394, 0);
-    Sleep(100);
     KeyDown(&buffer, 'W');
-    Sleep(1430);
+    KeyDown(&buffer, 'A');
+    Sleep(6000);
     KeyUp(&buffer, 'W');
+    KeyUp(&buffer, 'A');
+    Sleep(100);
+    MouseMoveRelative(&buffer, 1470, 0);
+    Sleep(100);
+    KeyDown(&buffer, '4');
+    KeyUp(&buffer, '4');
+    Sleep(300);
+    MouseClick(&buffer);
+    Sleep(500);
+    MouseMoveAbsolute(&buffer, 1400, 581);
+    Sleep(300);
+    MouseClick(&buffer);
 
-
-    while(1) {
-
-
-    }
 
 
 
