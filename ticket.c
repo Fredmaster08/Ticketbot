@@ -6,12 +6,29 @@
 #include <string.h>
 #include <windows.h>
 
-
 #define X 123
 #define Y -123
 #define SCREEN_WIDTH 2560
 #define SCREEN_HEIGHT 1440
 
+typedef struct {
+    float x;
+    float y;
+}Point;
+
+Point lerp(Point a, Point b, float t) {
+    Point x;
+    x.x = 1 - t * a.x;
+    x.y = 1 - t * a.y;
+    Point y;
+    y.x = t * b.x;
+    y.y = t * b.y;
+    Point z;
+    z.x = x.x + y.x;
+    z.y = y.y + x.y;
+
+    return z;
+}
 
 void MouseMoveRelative(INPUT *buffer, int x, int y) {
     buffer->type = INPUT_MOUSE;
@@ -69,38 +86,62 @@ void KeyPress(INPUT *buffer, WORD key) {
     KeyUp(buffer, key);
 }
 
+void turnLeft() {
+    INPUT buffer;
+    MouseMoveRelative(&buffer, -1490, 0);
+}
+
+void smoothTurnLeft(float speed) {
+    INPUT buffer;
+    Point p0 = {0};
+    Point p1 = {-1490, 0};
+    float t = 0.0f;
+    Point oldPos = {0};
+    while(t < 1.0f) {
+        Point pos = lerp(p0, p1, t);
+        Point p;
+        p.x = pos.x - oldPos.x;
+        p.y = pos.y - oldPos.y;
+        oldPos = pos;
+        MouseMoveRelative(&buffer, p.x, p.y);
+        t += speed;
+        Sleep(1);
+    }
+}
+
 
 int main(int argc, char *argv[]) {
 
     INPUT buffer;           //x: 1386 y: 582 Guide, x: 1172 y: 553 chicken wheeel
 
-
+    smoothTurnLeft(0.01f);
 
 
     /*
-    while(1) {
+      while(1) {
         POINT position;
         GetCursorPos(&position);
         printf("x: %d y: %d\n", position.x, position.y);
         Sleep(2000);
-    }    */
+    }   
+    */
+   // MouseMoveAbsolute(&buffer, 500, 500);
+   // MouseClick(&buffer);
+   // KeyPress(&buffer, VK_ESCAPE);
+
+  
     
    
-    
 
-     
-   
-   
-   
-
-
-    Sleep(1000);
+        
     SetCursorPos(500, 500); // bewegt Maus zum rechten Monitor (Minecraft)
     Sleep(1000);
     MouseClick(&buffer); // ist in Minecraft offiziell drin
     Sleep(1000);
     KeyPress(&buffer, VK_ESCAPE); // geht aus dem Chat
     Sleep(1000);
+    turnLeft();
+    Sleep(10000);
     KeyPress(&buffer, '9'); // wählt 9. Slot aus (nether star)
     Sleep(1000);
     MouseClick(&buffer);    // geht zu den Lobbys mit dem star
@@ -135,7 +176,11 @@ int main(int argc, char *argv[]) {
     MouseMoveAbsolute(&buffer, 1400, 581);
     Sleep(300);
     MouseClick(&buffer);
-
+    Sleep(1000);
+    MouseMoveAbsolute(&buffer, 1172, 553);
+    Sleep(100);
+    MouseClick(&buffer);
+    Sleep(100);
 
 
 
